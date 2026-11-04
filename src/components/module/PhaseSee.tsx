@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { SeeSpec } from "../../modules/types";
 import { AxiomView } from "../../axiom/AxiomView";
 import { LessonAnimation } from "./LessonAnimation";
@@ -11,7 +11,7 @@ export function PhaseSee({ spec, onDone }: { spec: SeeSpec; onDone: () => void }
     return p;
   }, [spec]);
   const [params, setParams] = useState<Record<string, number>>(initial);
-  const [solved, setSolved] = useState(false);
+  const [reflectionAnswer, setReflectionAnswer] = useState<string | null>(null);
   /** история исследования: все посещённые состояния параметров */
   const historyRef = useRef<Record<string, number>[]>([initial]);
   const [historyLen, setHistoryLen] = useState(1);
@@ -28,9 +28,7 @@ export function PhaseSee({ spec, onDone }: { spec: SeeSpec; onDone: () => void }
       : spec.goal.check(params)
     : true;
 
-  useEffect(() => {
-    if (goalMet && !solved) setSolved(true);
-  }, [goalMet, solved]);
+  const reflectionMet = !spec.reflection || reflectionAnswer === spec.reflection.correctId;
   void historyLen;
 
   return (
@@ -117,16 +115,32 @@ export function PhaseSee({ spec, onDone }: { spec: SeeSpec; onDone: () => void }
           </div>
         )}
 
+        {spec.reflection && (!spec.goal || goalMet) && (
+          <fieldset className="mt-5 rounded-xl border border-sky-200 bg-sky-50 px-4 py-4">
+            <legend className="px-1 text-sm font-semibold text-sky-900">Объясните результат исследования</legend>
+            <p className="mb-3 text-sm text-slate-700">{spec.reflection.question}</p>
+            <div className="grid gap-2">
+              {spec.reflection.options.map((option) => (
+                <button key={option.id} type="button" aria-pressed={reflectionAnswer === option.id}
+                  onClick={() => setReflectionAnswer(option.id)}
+                  className={`rounded-lg border px-3 py-2.5 text-left text-sm ${
+                    reflectionAnswer === option.id ? "border-sky-500 bg-white font-semibold text-slate-900" : "border-slate-300 bg-white text-slate-700 hover:border-sky-500"
+                  }`}>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            {reflectionAnswer && <p role="status" className="mt-3 text-sm text-slate-700">
+              {reflectionMet ? spec.reflection.correctFeedback : spec.reflection.incorrectFeedback}
+            </p>}
+          </fieldset>
+        )}
         <div className="mt-6 flex justify-end">
-          <Button
-            onClick={onDone}
-            disabled={(!!spec.goal && !solved) || (!spec.goal && !!spec.animation && !explored)}
-          >
-            {spec.goal && !solved
-              ? "Выполните задание"
-              : !spec.goal && spec.animation && !explored
-                ? "Исследуйте модель"
-                : "Продолжить"}
+          <Button onClick={onDone}
+            disabled={!goalMet || !reflectionMet || (!spec.goal && !!spec.animation && !explored)}>
+            {!goalMet ? "Выполните исследование" :
+              !reflectionMet ? "Объясните результат" :
+                !spec.goal && spec.animation && !explored ? "Исследуйте модель" : "Продолжить"}
           </Button>
         </div>
       </div>

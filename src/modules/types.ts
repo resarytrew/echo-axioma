@@ -40,6 +40,14 @@ export interface AnimationLesson {
   transcript?: string[];
 }
 
+export interface SeeReflection {
+  question: string;
+  options: { id: string; label: string }[];
+  correctId: string;
+  incorrectFeedback: string;
+  correctFeedback: string;
+}
+
 export interface SeeSpec {
   title: string;
   description: string;
@@ -48,6 +56,8 @@ export interface SeeSpec {
   build: (p: Record<string, number>) => AxiomSceneSpec;
   note?: (p: Record<string, number>) => string;
   goal?: SeeGoal;
+  /** Проверка осмысленного вывода после эксперимента; простого движения ползунка недостаточно. */
+  reflection?: SeeReflection;
 }
 
 export interface CodeTask {
