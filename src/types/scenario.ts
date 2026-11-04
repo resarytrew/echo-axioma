@@ -112,6 +112,8 @@ export interface ChoiceScene extends SceneBase {
   correctId: string;
   correctFeedback: string;
   incorrectFeedback?: string;
+  /** Для контрольных вопросов: переход только после верного ответа. */
+  requireCorrect?: boolean;
   afterLines?: Line[];
 }
 
@@ -164,6 +166,8 @@ export interface MiniLabItem {
   prompt: string;
   options: ChoiceOption[];
   correctId: string;
+  feedback?: string;
+  incorrectFeedback?: string;
 }
 
 export interface MiniLabScene extends SceneBase {

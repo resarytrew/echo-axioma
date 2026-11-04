@@ -92,6 +92,10 @@ export function TrainLab({ onDone }: { onDone: () => void }) {
   }
 
   const lastVal = points.filter((p) => p.valLoss !== null).slice(-1)[0]?.valLoss;
+  // Задача A демонстрационная: обойти корректную биграмму на ней нельзя.
+  // Итоговое достижение возможно только на контекстной задаче B.
+  const canComplete = task === "context" && report !== null && baseline !== null &&
+    !report.aborted && Number.isFinite(report.testLoss) && report.testAccuracy > baseline;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-8">
@@ -242,7 +246,7 @@ export function TrainLab({ onDone }: { onDone: () => void }) {
                 <Metric
                   label="test accuracy"
                   value={`${(report.testAccuracy * 100).toFixed(1)}%`}
-                  good={baseline !== null && report.testAccuracy > baseline + 0.02}
+                  good={baseline !== null && report.testAccuracy > baseline}
                 />
                 <Metric
                   label="grad check (mean rel err)"
@@ -308,9 +312,11 @@ export function TrainLab({ onDone }: { onDone: () => void }) {
                 <Button variant="outline" onClick={() => setModelKey((k) => k + 1)}>
                   Сбросить веса
                 </Button>
-                <Button size="lg" onClick={onDone} disabled={report.aborted || !isFinite(report.testLoss)}>
+                <Button size="lg" onClick={onDone} disabled={!canComplete}>
                   {report.aborted
                     ? "Эксперимент прерван — повторите обучение"
+                    : task !== "context" ? "Завершение доступно после задачи B"
+                    : !canComplete ? "Превзойдите биграмму на тестовой выборке"
                     : "Фиксировать результат и завершить модуль"}
                 </Button>
               </div>

@@ -45,7 +45,7 @@ export function MiniLabScene({
                 <div className="flex flex-wrap gap-2">
                   {item.options.map((opt) => {
                     const isPicked = picked === opt.id;
-                    const reveal = !!picked;
+                    const reveal = picked === item.correctId;
                     const isCorrect = opt.id === item.correctId;
                     return (
                       <button
@@ -69,6 +69,11 @@ export function MiniLabScene({
                     );
                   })}
                 </div>
+                {picked && picked !== item.correctId && (
+                  <p role="status" className="mt-3 text-sm text-amber-800">
+                    {item.options.find((opt) => opt.id === picked)?.feedback || item.incorrectFeedback || "Проверьте вычисления и попробуйте другое решение."}
+                  </p>
+                )}
               </div>
             );
           })}
@@ -84,7 +89,7 @@ export function MiniLabScene({
                 : "border-amber-200 bg-amber-50 text-amber-800"
             }`}
           >
-            {allCorrect ? "Все расчёты верны." : "Есть неточности — сверь степени двойки."}
+            {allCorrect ? "Все расчёты верны." : "Не все ответы верны. Используйте пояснения под заданиями и исправьте ошибки."}
           </motion.div>
         )}
 

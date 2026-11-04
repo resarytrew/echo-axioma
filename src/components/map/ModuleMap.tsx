@@ -1,19 +1,23 @@
 import { motion } from "framer-motion";
 import { ACTS, modulesOfAct } from "../../modules/registry";
 import { ModuleSpec } from "../../modules/types";
+import { LessonProgress, lessonMastery } from "../../game/progress";
 
 export function ModuleMap({
   completed,
+  progress,
   onOpen,
   onStation,
   onMenu,
 }: {
   completed: Set<string>;
+  progress: Record<string, LessonProgress>;
   onOpen: (m: ModuleSpec) => void;
   onStation?: () => void;
   onMenu?: () => void;
 }) {
   const completedCount = completed.size;
+  const dueCount = Object.values(progress).filter((p) => p.completed && p.reviewDueAt && Date.parse(p.reviewDueAt) <= Date.now()).length;
 
   return (
     <div className="academy-map mx-auto w-full max-w-5xl px-4 py-10 sm:px-8">
@@ -30,6 +34,9 @@ export function ModuleMap({
           <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 font-mono text-xs text-emerald-700">
             ПРОЙДЕНО МОДУЛЕЙ: {completedCount}
           </span>
+          {dueCount > 0 && <span className="rounded-full border border-amber-300 bg-amber-50 px-4 py-1.5 text-xs text-amber-800">
+            На повторение: {dueCount}
+          </span>}
           {onMenu && (
             <button
               onClick={onMenu}
@@ -81,6 +88,9 @@ export function ModuleMap({
               <div className="divide-y divide-slate-100">
                 {mods.map((m) => {
                   const done = completed.has(m.id);
+                  const lesson = progress[m.id];
+                  const mastery = lesson ? lessonMastery(lesson) : 0;
+                  const due = !!lesson?.reviewDueAt && Date.parse(lesson.reviewDueAt) <= Date.now();
                   return (
                     <div key={m.id} className="academy-module flex items-center gap-4 px-6 py-3.5">
                       <span
@@ -103,7 +113,12 @@ export function ModuleMap({
                           {m.title}
                           {done && <span className="ml-2 text-[10px]">✓</span>}
                         </div>
-                        <div className="truncate text-xs text-slate-400">{m.summary}</div>
+                        <div className="truncate text-xs text-slate-600">{m.summary}</div>
+                        {done && <div className="mt-1 text-xs text-slate-700">
+                          Освоение по упражнениям: {mastery}%
+                          {lesson?.handsFirstTry !== undefined && " · С первой попытки: " + Math.round(lesson.handsFirstTry * 100) + "%"}
+                          {due ? " · Рекомендуется повторение" : ""}
+                        </div>}
                       </div>
                       {m.playable ? (
                         <button
@@ -114,7 +129,7 @@ export function ModuleMap({
                               : "bg-sky-500 text-white shadow-sm hover:bg-sky-400"
                           }`}
                         >
-                          {done ? "ПОВТОРИТЬ" : m.trainLab ? "ОБУЧИТЬ" : "ОТКРЫТЬ"}
+                          {done ? due ? "ПОВТОРИТЬ СЕЙЧАС" : "ПОВТОРИТЬ" : m.trainLab ? "ОБУЧИТЬ" : "ОТКРЫТЬ"}
                         </button>
                       ) : (
                         <span className="font-mono text-[10px] uppercase tracking-widest text-slate-300">

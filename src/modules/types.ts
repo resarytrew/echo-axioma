@@ -37,7 +37,15 @@ export interface AnimationLesson {
   durationSeconds?: number;
   sourceFile?: string;
   /** Текстовая альтернатива: доступность и работа без видео */
-  transcript?: string[];
+  transcript: [string, ...string[]];
+}
+
+export interface SeeReflection {
+  question: string;
+  options: { id: string; label: string }[];
+  correctId: string;
+  incorrectFeedback: string;
+  correctFeedback: string;
 }
 
 export interface SeeSpec {
@@ -48,6 +56,8 @@ export interface SeeSpec {
   build: (p: Record<string, number>) => AxiomSceneSpec;
   note?: (p: Record<string, number>) => string;
   goal?: SeeGoal;
+  /** Проверка осмысленного вывода после эксперимента; простого движения ползунка недостаточно. */
+  reflection?: SeeReflection;
 }
 
 export interface CodeTask {
@@ -55,6 +65,8 @@ export interface CodeTask {
   brief: string;
   starter: string;
   tests: RunnerTest[];
+  /** Имя функции, экспортируемой из ученического решения для изолированной проверки. */
+  entrypoint?: string;
   hint?: string;
 }
 

@@ -45,6 +45,7 @@ export const module2Scenes: Scene[] = [
     ],
     correctId: "down",
     correctFeedback: "Было четыре варианта — стал один. Это и называется получением информации.",
+    incorrectFeedback: "Сообщение указало конкретную дверь, поэтому число возможных вариантов уменьшилось.",
     afterLines: [
       { speaker: "shumma", text: "Было четыре варианта. Стал один." },
       { speaker: "shumma", text: "Скучно." },
@@ -76,6 +77,7 @@ export const module2Scenes: Scene[] = [
     ],
     correctId: "2",
     correctFeedback: "OFF → 0, ON → 1. Это и есть один бит.",
+    incorrectFeedback: "Один бит различает ровно два состояния, которые можно записать как 0 и 1.",
   },
   {
     id: "m2-concept-bit",
@@ -191,6 +193,7 @@ export const module2Scenes: Scene[] = [
     ],
     correctId: "b",
     correctFeedback: "Редкое событие обычно сильнее уменьшает неопределённость.",
+    incorrectFeedback: "Сравните вероятности событий: неожиданное сообщение обычно несёт больше информации.",
   },
   {
     id: "m2-size-choice",
@@ -207,6 +210,7 @@ export const module2Scenes: Scene[] = [
     ],
     correctId: "small",
     correctFeedback: "Размер данных не равен смысловой ценности сообщения.",
+    incorrectFeedback: "Объём байтов и полезность сообщения экипажу — разные характеристики.",
     afterLines: [{ speaker: "shumma", text: "Восемь гигабайт. Очевидно важнее." }, { speaker: "zara", text: "Именно поэтому — нет." }],
   },
   {

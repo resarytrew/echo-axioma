@@ -132,7 +132,7 @@ export default function App() {
   function completeModule(spec: ModuleSpec) {
     update((p) => {
       const lesson = lessonOf(p, spec.id);
-      let next = markLesson(p, spec.id, { completed: true, phaseIndex: 0 });
+      let next = markLesson(p, spec.id, { completed: true });
       if (spec.result?.capability) {
         // «Проверено» только при фактически пройденных автотестах кода
         const state = lesson.codePassed ? "verified" : "learned";
@@ -243,6 +243,7 @@ export default function App() {
           <Fade key="academy" className="exo-interior game-screen academy-screen">
             <ModuleMap
               completed={completed}
+              progress={progress.educationalProgress}
               onStation={() => go("station")}
               onMenu={() => go("menu")}
               onOpen={(m) => {
@@ -257,7 +258,10 @@ export default function App() {
           <Fade key={"mod-" + activeSpec.id}>
             <ModulePlayer
               module={activeSpec}
-              initialPhase={lessonOf(progress, activeSpec.id).phaseIndex ?? 0}
+              initialPhase={lessonOf(progress, activeSpec.id).completed
+                ? (lessonOf(progress, activeSpec.id).handsFirstTry ?? 1) < 0.8 ? 2 : 1
+                : lessonOf(progress, activeSpec.id).phaseIndex ?? 0}
+              isReview={lessonOf(progress, activeSpec.id).completed}
               onPhaseChange={(i) => update((p) => markLesson(p, activeSpec.id, { phaseIndex: i }))}
               onPhaseDone={(phase, extra) =>
                 update((p) => markPhaseDone(p, activeSpec.id, phase, extra))

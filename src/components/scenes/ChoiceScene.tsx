@@ -29,6 +29,7 @@ export function ChoiceScene({
   }
 
   const correct = picked === scene.correctId;
+  const gate = scene.requireCorrect ?? true;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
@@ -49,7 +50,7 @@ export function ChoiceScene({
         <div className="grid gap-3">
           {scene.options.map((opt) => {
             const isPicked = picked === opt.id;
-            const reveal = picked !== null;
+            const reveal = picked !== null && (!gate || correct);
             const isCorrectOpt = opt.id === scene.correctId;
             return (
               <button
@@ -82,16 +83,22 @@ export function ChoiceScene({
                 : "border-amber-200 bg-amber-50 text-amber-800"
             }`}
           >
-            {scene.options.find((o) => o.id === picked)?.feedback ||
-              (correct ? scene.correctFeedback : scene.incorrectFeedback || scene.correctFeedback)}
+            {correct
+              ? scene.correctFeedback
+              : scene.options.find((o) => o.id === picked)?.feedback ||
+                scene.incorrectFeedback || "Проверьте смысл вопроса и попробуйте снова."}
           </motion.div>
         )}
 
         {picked && (
           <div className="mt-6 flex justify-end">
-            <Button onClick={() => (scene.afterLines ? setShowAfter(true) : onDone())}>
-              Продолжить
-            </Button>
+            {gate && !correct ? (
+              <Button onClick={() => setPicked(null)}>Попробовать снова</Button>
+            ) : (
+              <Button onClick={() => (scene.afterLines ? setShowAfter(true) : onDone())}>
+                Продолжить
+              </Button>
+            )}
           </div>
         )}
       </div>

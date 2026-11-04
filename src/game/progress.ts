@@ -31,6 +31,12 @@ export interface LessonProgress {
   handsFirstTry?: number; // доля верных с первой попытки
   codePassed?: boolean;
   seeGoalMet?: boolean;
+  /** Индикатор освоения на основе практических действий, от 0 до 100. */
+  mastery?: number;
+  /** Сколько раз завершён модуль, включая повторения. */
+  practiceCount?: number;
+  lastPracticedAt?: string;
+  reviewDueAt?: string;
   completed: boolean;
 }
 
@@ -233,11 +239,33 @@ export function setDraft(p: GameProgress, draft: MissionDraft): GameProgress {
   return { ...p, drafts: { ...p.drafts, [draft.missionId]: { ...p.drafts[draft.missionId], ...draft } } };
 }
 
+export function lessonMastery(lesson: LessonProgress): number {
+  return Math.round(
+    (lesson.phasesDone.includes("understand") ? 20 : 0) +
+    (lesson.seeGoalMet ? 20 : 0) +
+    (lesson.handsFirstTry ?? 0) * 30 +
+    (lesson.codePassed ? 30 : 0),
+  );
+}
+
 export function markLesson(p: GameProgress, moduleId: string, patch: Partial<LessonProgress>): GameProgress {
   const prev = p.educationalProgress[moduleId] ?? { moduleId, phasesDone: [], completed: false };
+  let next: LessonProgress = { ...prev, ...patch };
+  next.mastery = lessonMastery(next);
+  if (patch.completed === true) {
+    const now = new Date();
+    const score = next.mastery;
+    const days = score >= 90 ? 7 : score >= 75 ? 3 : 1;
+    next = {
+      ...next,
+      practiceCount: (prev.practiceCount ?? 0) + 1,
+      lastPracticedAt: now.toISOString(),
+      reviewDueAt: new Date(now.getTime() + days * 86400000).toISOString(),
+    };
+  }
   return {
     ...p,
-    educationalProgress: { ...p.educationalProgress, [moduleId]: { ...prev, ...patch } },
+    educationalProgress: { ...p.educationalProgress, [moduleId]: next },
   };
 }
 
@@ -254,7 +282,10 @@ export function markPhaseDone(
     ...p,
     educationalProgress: {
       ...p.educationalProgress,
-      [moduleId]: { ...prev, ...extra, phasesDone },
+      [moduleId]: (() => {
+        const next = { ...prev, ...extra, phasesDone, lastPracticedAt: new Date().toISOString() };
+        return { ...next, mastery: lessonMastery(next) };
+      })(),
     },
   };
 }

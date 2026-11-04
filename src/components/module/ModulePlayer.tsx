@@ -19,6 +19,7 @@ export function ModulePlayer({
   onComplete,
   onExit,
   initialPhase = 0,
+  isReview = false,
   onPhaseChange,
   onPhaseDone,
 }: {
@@ -27,6 +28,7 @@ export function ModulePlayer({
   onComplete: () => void;
   onExit: () => void;
   initialPhase?: number;
+  isReview?: boolean;
   onPhaseChange?: (index: number) => void;
   onPhaseDone?: (phase: string, extra?: { codePassed?: boolean; seeGoalMet?: boolean; handsFirstTry?: number }) => void;
 }) {
@@ -76,7 +78,7 @@ export function ModulePlayer({
               <button
                 key={p.key}
                 onClick={() => {
-                  if (i < phaseIdx) {
+                  if (isReview || i < phaseIdx) {
                     setPhaseIdx(i);
                     onPhaseChange?.(i);
                   }

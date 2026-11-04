@@ -22,6 +22,7 @@ export function ClassifyScene({ scene, onDone }: { scene: ClassifyType; onDone: 
   const success =
     needsFlag.every((r) => selected.has(r.id)) &&
     scene.rows.filter((r) => r.flag === "none").every((r) => !selected.has(r.id));
+  const errors = scene.rows.map((r, i) => ({r, number: i + 1})).filter(({r}) => selected.has(r.id) !== (r.flag !== "none"));
 
   function toggle(id: string) {
     if (checked) return;
@@ -96,8 +97,8 @@ export function ClassifyScene({ scene, onDone }: { scene: ClassifyType; onDone: 
             }`}
           >
             {success
-              ? "Верно отмечено."
-              : "Отмечены не все подозрительные значения — проверь строки с пропуском и явным выбросом."}
+              ? "Верно: все подозрительные измерения найдены."
+              : "Пересмотрите строки " + errors.map(({number}) => number).join(", ") + ". Для каждой проверьте пропуски, единицы измерения и расхождение с соседними показаниями."}
           </motion.div>
         )}
 

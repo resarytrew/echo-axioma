@@ -30,6 +30,8 @@ export function MultiSelectScene({
     .every((o) => selected.has(o.id));
   const noWrongChosen = scene.options.filter((o) => !o.correct).every((o) => !selected.has(o.id));
   const success = allCorrectChosen && noWrongChosen;
+  const extra = scene.options.filter((o) => selected.has(o.id) && !o.correct).map((o) => o.label);
+  const missed = scene.options.filter((o) => !selected.has(o.id) && o.correct).map((o) => o.label);
 
   function toggle(id: string) {
     if (checked) return;
@@ -88,7 +90,12 @@ export function MultiSelectScene({
                 : "border-amber-200 bg-amber-50 text-amber-800"
             }`}
           >
-            {success ? "Верно." : "Проверь ещё раз — отмечено лишнее или не выбрано нужное."}
+            {success ? "Верно. Вы выделили все подходящие варианты." : (
+              <div className="space-y-1">
+                {extra.length > 0 && <p>Лишние варианты: {extra.join(", ")}. Проверьте, соответствуют ли они условию.</p>}
+                {missed.length > 0 && <p>Не отмечены подходящие варианты: {missed.join(", ")}. Сравните их свойства с условием.</p>}
+              </div>
+            )}
           </motion.div>
         )}
 

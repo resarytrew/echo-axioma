@@ -10,10 +10,12 @@ import { Typewriter } from "../ui/Typewriter";
 export function Narrative({ scene, onDone }: { scene: NarrativeScene; onDone: () => void }) {
   const [index, setIndex] = useState(0);
   const [typed, setTyped] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     setIndex(0);
     setTyped(false);
+    setShowAll(false);
   }, [scene]);
 
   const line = scene.lines[index];
@@ -21,12 +23,13 @@ export function Narrative({ scene, onDone }: { scene: NarrativeScene; onDone: ()
   const character = CHARACTERS[line.speaker];
 
   function next() {
-    if (!typed) return;
+    if (!typed) { setShowAll(true); return; }
     if (isLast) {
       onDone();
     } else {
       setIndex((i) => i + 1);
       setTyped(false);
+      setShowAll(false);
     }
   }
 
@@ -38,8 +41,6 @@ export function Narrative({ scene, onDone }: { scene: NarrativeScene; onDone: ()
 
       <div
         className="narrative-panel panel-glass relative min-h-[220px] overflow-hidden rounded-2xl px-6 py-8 sm:px-10"
-        onClick={next}
-        role="button"
       >
         <div
           className="narrative-glow pointer-events-none absolute inset-0 opacity-60"
@@ -70,7 +71,7 @@ export function Narrative({ scene, onDone }: { scene: NarrativeScene; onDone: ()
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <Typewriter text={line.text} onDone={() => setTyped(true)} speed={14} />
+                  <Typewriter text={line.text} instant={showAll} onDone={() => setTyped(true)} speed={14} />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -96,7 +97,7 @@ export function Narrative({ scene, onDone }: { scene: NarrativeScene; onDone: ()
               next();
             }}
           >
-            {!typed ? "···" : isLast ? scene.cta || "Продолжить" : "Далее ›"}
+            {!typed ? "Показать весь текст" : isLast ? scene.cta || "Продолжить" : "Далее ›"}
           </Button>
         </div>
       </div>

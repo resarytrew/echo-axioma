@@ -115,6 +115,7 @@ export const module1Scenes: Scene[] = [
     ],
     correctId: "d",
     correctFeedback: "Именно это и есть ключевая часть определения.",
+    incorrectFeedback: "Интеллект связан не только с накоплением данных, но и с их применением в новой задаче.",
   },
   {
     id: "m1-s2b",
@@ -141,6 +142,7 @@ export const module1Scenes: Scene[] = [
     ],
     correctId: "znania",
     correctFeedback: "Именно. Сейчас у ЭХО их буквально ноль.",
+    incorrectFeedback: "Здесь важна не скорость исполнения, а наличие знания, позволяющего объяснить решение.",
   },
   {
     id: "m1-s3a",
@@ -289,6 +291,7 @@ export const module1Scenes: Scene[] = [
     ],
     correctId: "ctx",
     correctFeedback: "Контекст сообщает системе, что именно означает значение.",
+    incorrectFeedback: "Переменная и единица измерения дают интерпретацию значению; само число не изменилось.",
     afterLines: [{ speaker: "zara", text: "Контекст сообщает системе, что именно означает значение." }],
   },
   {
@@ -326,6 +329,7 @@ export const module1Scenes: Scene[] = [
     ],
     correctId: "little",
     correctFeedback: "Почти ничего — без контекста значение не несёт смысла.",
+    incorrectFeedback: "Без имени величины и единицы измерения число 0,73 невозможно однозначно интерпретировать.",
     afterLines: [
       { speaker: "shumma", text: "Я бы сказал: красивое. Круглое почти." },
       { speaker: "zara", text: "Это не анализ." },

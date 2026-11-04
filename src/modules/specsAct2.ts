@@ -34,17 +34,17 @@ export const act2Specs: ModuleSpec[] = [
         prompt: "w = [2, -1], x = [3, 4], b = 0.5. Сумма w·x + b = ?",
         options: [
           { id: "a", label: "2.5" },
-          { id: "b", label: "6.5" },
+          { id: "b", label: "2.5" },
           { id: "c", label: "10.5" },
         ],
         correctId: "b",
       },
       {
         id: "h2",
-        prompt: "Пропустим 6.5 через f = max(0,·) (ReLU). Результат:",
+        prompt: "Пропустим 2.5 через f = max(0,·) (ReLU). Результат:",
         options: [
           { id: "a", label: "0" },
-          { id: "b", label: "6.5" },
+          { id: "b", label: "2.5" },
           { id: "c", label: "-6.5" },
         ],
         correctId: "b",
@@ -56,7 +56,7 @@ export const act2Specs: ModuleSpec[] = [
       starter:
         "function dot(a, b) {\n  let s = 0;\n  for (let i = 0; i < a.length; i++) s += a[i] * b[i];\n  return s;\n}\n\nfunction neuron(w, x, b) {\n  // relu(dot(w, x) + b)\n}\n",
       tests: [
-        { name: "neuron([2,-1],[3,4],0.5) === 6.5", code: "neuron([2,-1],[3,4],0.5) === 6.5" },
+        { name: "neuron([2,-1],[3,4],0.5) === 2.5", code: "neuron([2,-1],[3,4],0.5) === 2.5" },
         { name: "neuron([0,0],[9,9],-1) === 0", code: "neuron([0,0],[9,9],-1) === 0" },
       ],
       hint: "Math.max(0, s).",

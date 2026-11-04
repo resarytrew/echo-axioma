@@ -21,6 +21,7 @@ export function MatchScene({ scene, onDone }: { scene: MatchType; onDone: () => 
   const [matched, setMatched] = useState<Set<string>>(new Set());
   const [leftPick, setLeftPick] = useState<string | null>(null);
   const [wrongFlash, setWrongFlash] = useState<string | null>(null);
+  const [wrongText, setWrongText] = useState("");
   const [showAfter, setShowAfter] = useState(false);
 
   if (showAfter && scene.afterLines) {
@@ -39,8 +40,12 @@ export function MatchScene({ scene, onDone }: { scene: MatchType; onDone: () => 
     if (id === leftPick) {
       setMatched((prev) => new Set(prev).add(id));
       setLeftPick(null);
+      setWrongText("");
     } else {
       setWrongFlash(id);
+      const left = scene.pairs.find((p) => p.id === leftPick);
+      const right = scene.pairs.find((p) => p.id === id);
+      setWrongText("«" + (left?.left ?? "") + "» не соответствует «" + (right?.right ?? "") + "». Сравните смысл и назначение элементов.");
       setTimeout(() => setWrongFlash(null), 420);
     }
   }
@@ -100,6 +105,7 @@ export function MatchScene({ scene, onDone }: { scene: MatchType; onDone: () => 
           </div>
         </div>
 
+        {wrongText && <p role="status" className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{wrongText}</p>}
         {done && (
           <div className="mt-6 flex justify-end">
             <Button onClick={() => (scene.afterLines ? setShowAfter(true) : onDone())}>

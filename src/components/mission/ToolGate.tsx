@@ -25,8 +25,11 @@ export function ToolGate({
 }) {
   const req = MISSION_REQUIREMENTS[missionId];
   if (!req) {
-    onProceed();
-    return null;
+    return <div className="mission-gate exo-interior p-8" role="alert">
+      <h2 className="text-xl font-bold">Миссия пока недоступна</h2>
+      <p className="my-3">Для этой миссии ещё не зарегистрированы учебные требования.</p>
+      <Button onClick={onExit}>Вернуться на станцию</Button>
+    </div>;
   }
   const missing = req.required.filter((r) => !has(r.capability));
   const ready = missing.length === 0;
