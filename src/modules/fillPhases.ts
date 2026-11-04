@@ -1,5 +1,6 @@
 import { ModuleSpec, SeeSpec, CodeTask } from "./types";
 import { MiniLabItem } from "../types/scenario";
+import { strengthenAssessment } from "./assessment";
 
 /**
  * Дополняющие этапы, доводящие каждый играбельный модуль
@@ -449,10 +450,10 @@ const code: Record<string, CodeTask> = {
 
 export function fillPhases(spec: ModuleSpec): ModuleSpec {
   if (!spec.playable) return spec;
-  return {
+  return strengthenAssessment({
     ...spec,
     see: spec.see ?? see[spec.id],
     hands: spec.hands ?? hands[spec.id],
     code: spec.code ?? code[spec.id],
-  };
+  });
 }

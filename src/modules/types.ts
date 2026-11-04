@@ -55,6 +55,8 @@ export interface CodeTask {
   brief: string;
   starter: string;
   tests: RunnerTest[];
+  /** Имя функции, экспортируемой из ученического решения для изолированной проверки. */
+  entrypoint?: string;
   hint?: string;
 }
 

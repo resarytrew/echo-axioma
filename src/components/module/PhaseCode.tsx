@@ -13,12 +13,12 @@ export function PhaseCode({ task, onDone }: { task: CodeTask; onDone: () => void
   async function run() {
     setRunning(true);
     setResult(null);
-    const res = await runStudentCode(code, task.tests);
+    const res = await runStudentCode(code, task.tests, 4000, task.entrypoint);
     setResult(res);
     setRunning(false);
   }
 
-  const allPass = result?.tests?.every((t) => t.passed);
+  const allPass = !!result?.ok && !!result.tests?.length && result.tests.length === task.tests.length && result.tests.every((t) => t.passed);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10">
@@ -38,7 +38,7 @@ export function PhaseCode({ task, onDone }: { task: CodeTask; onDone: () => void
           </div>
           <textarea
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => { setCode(e.target.value); setResult(null); }}
             spellCheck={false}
             rows={10}
             className="w-full resize-y bg-transparent px-4 py-3 font-mono text-[13px] leading-relaxed text-sky-200 outline-none"
