@@ -12,6 +12,7 @@ export function TextInputScene({
 }) {
   const [value, setValue] = useState("");
   const [saved, setSaved] = useState(false);
+  const [checked, setChecked] = useState([false, false]);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
@@ -61,8 +62,19 @@ export function TextInputScene({
               </div>
               <div className="font-head text-emerald-900">{scene.officialDefinition}</div>
             </motion.div>
-            <div className="flex justify-end">
-              <Button onClick={() => onDone(value)}>Продолжить</Button>
+            <div className="rounded-xl border border-slate-200 bg-white px-4 py-4">
+              <p className="mb-3 text-sm font-semibold text-slate-800">Самопроверка определения</p>
+              <p className="mb-3 text-sm text-slate-600">Свободный текст не оценивается автоматически. Сравните его с определением курса и при необходимости исправьте.</p>
+              {["Я назвал ключевое свойство понятия.", "Я пояснил, как понятие используется или с чем связано."].map((label, i) => (
+                <label key={i} className="mb-2 flex items-center gap-2 text-sm text-slate-700">
+                  <input type="checkbox" checked={checked[i]} onChange={(e) => setChecked((p) => p.map((v,j) => i === j ? e.target.checked : v))} />
+                  {label}
+                </label>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => { setSaved(false); setChecked([false,false]); }}>Исправить определение</Button>
+              <Button onClick={() => onDone(value)} disabled={!checked.every(Boolean)}>Продолжить</Button>
             </div>
           </div>
         )}

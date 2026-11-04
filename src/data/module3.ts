@@ -195,6 +195,7 @@ export const module3Scenes: Scene[] = [
     ],
     correctId: "a",
     correctFeedback: "Иерархия классов передаётся по цепочке — это и есть наследование.",
+    incorrectFeedback: "Связь is_a передаётся вверх по цепочке классов, а не наоборот.",
   },
   {
     id: "m3-inheritance-demo",
@@ -259,6 +260,7 @@ export const module3Scenes: Scene[] = [
     ],
     correctId: "b",
     correctFeedback: "ЭХО применил цепочку правил и сделал вывод на основе связанных фактов.",
+    incorrectFeedback: "Соедините два правила: низкое давление ослабляет охлаждение, при высокой мощности растёт риск перегрева.",
     afterLines: [{ speaker: "zara", text: "Теперь ЭХО не просто хранит знания. Он начинает ими пользоваться." }, { speaker: "shumma", text: "Опасная тенденция." }],
   },
   {
@@ -500,6 +502,7 @@ export const module3Scenes: Scene[] = [
     ],
     correctId: "a",
     correctFeedback: "Реактор работает выше критической температуры при недостаточном давлении охлаждения — risk = HIGH.",
+    incorrectFeedback: "Условие должно учитывать и превышение критической температуры, и недостаток давления.",
     afterLines: [
       { speaker: "shumma", text: "Неплохо." },
       { speaker: "zara", text: "Это сейчас была похвала?" },
