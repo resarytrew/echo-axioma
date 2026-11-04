@@ -1,5 +1,5 @@
 import type { ChoiceScene, MiniLabItem } from "../types/scenario";
-import type { CodeTask, ModuleSpec, SeeSpec } from "./types";
+import type { CodeTask, ModuleSpec } from "./types";
 import type { RunnerTest } from "../runner/vectorRunner";
 
 /** Самостоятельные контрольные вопросы: не копируют примеры из практикума. */
