@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
 export interface AxiomPoint {
   p: [number, number, number];
@@ -28,6 +28,11 @@ export interface AxiomSceneSpec {
  */
 export function AxiomView({ scene, height = 300 }: { scene: AxiomSceneSpec; height?: number }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const descriptionId = useId();
+  const sceneDescription = [
+    ...(scene.vectors ?? []).map((v) => (v.label ?? "Вектор") + ": от [" + (v.from ?? [0,0,0]).join(", ") + "] до [" + v.to.join(", ") + "]"),
+    ...(scene.points ?? []).map((p) => (p.label ?? "Точка") + ": [" + p.p.join(", ") + "]"),
+  ].join(". ") || "Трёхмерная координатная сетка.";
   const sceneRef = useRef(scene);
   sceneRef.current = scene;
 
@@ -165,6 +170,16 @@ export function AxiomView({ scene, height = 300 }: { scene: AxiomSceneSpec; heig
       lastY = e.clientY;
     };
     const up = () => (dragging = false);
+    const keydown = (e: KeyboardEvent) => {
+      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+      e.preventDefault();
+      auto = false;
+      if (e.key === "ArrowLeft") rot.y -= 0.18;
+      if (e.key === "ArrowRight") rot.y += 0.18;
+      if (e.key === "ArrowUp") rot.x = Math.max(-1.4, rot.x - 0.18);
+      if (e.key === "ArrowDown") rot.x = Math.min(1.4, rot.x + 0.18);
+    };
+    canvas.addEventListener("keydown", keydown);
     canvas.addEventListener("pointerdown", down);
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
@@ -172,6 +187,7 @@ export function AxiomView({ scene, height = 300 }: { scene: AxiomSceneSpec; heig
 
     return () => {
       cancelAnimationFrame(raf);
+      canvas.removeEventListener("keydown", keydown);
       canvas.removeEventListener("pointerdown", down);
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
@@ -181,7 +197,9 @@ export function AxiomView({ scene, height = 300 }: { scene: AxiomSceneSpec; heig
 
   return (
     <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-b from-slate-50 to-sky-50/50">
-      <canvas ref={canvasRef} className="block w-full cursor-grab active:cursor-grabbing" style={{ height }} />
+      <canvas ref={canvasRef} tabIndex={0} role="img" aria-label="Интерактивная трёхмерная модель" aria-describedby={descriptionId}
+        className="block w-full cursor-grab active:cursor-grabbing focus:outline-2 focus:outline-sky-500" style={{ height }} />
+      <p id={descriptionId} className="sr-only">{sceneDescription} Для вращения используйте стрелки клавиатуры или мышь.</p>
       <div className="pointer-events-none absolute bottom-2 right-3 font-mono text-[10px] tracking-widest text-slate-400">
         AXIOM 3D LAB · вращайте сцену мышью
       </div>

@@ -3,10 +3,12 @@ import { useEffect, useRef, useState } from "react";
 export function Typewriter({
   text,
   speed = 16,
+  instant = false,
   onDone,
 }: {
   text: string;
   speed?: number;
+  instant?: boolean;
   onDone?: () => void;
 }) {
   const [shown, setShown] = useState("");
@@ -15,6 +17,12 @@ export function Typewriter({
   useEffect(() => {
     setShown("");
     doneRef.current = false;
+    if (instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(text);
+      doneRef.current = true;
+      onDone?.();
+      return;
+    }
     let i = 0;
     const interval = window.setInterval(() => {
       i += 1;
@@ -29,22 +37,16 @@ export function Typewriter({
     }, speed);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
+  }, [text, instant]);
 
   const finished = shown.length === text.length;
 
   return (
-    <span onClick={() => {
-      if (!finished) {
-        setShown(text);
-        if (!doneRef.current) {
-          doneRef.current = true;
-          onDone?.();
-        }
-      }
-    }}>
-      {shown}
-      {!finished && <span className="caret" />}
+    <span role="text" aria-label={text}>
+      <span aria-hidden="true">
+        {shown}
+        {!finished && <span className="caret" />}
+      </span>
     </span>
   );
 }

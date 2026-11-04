@@ -30,6 +30,13 @@ export function VisualRenderer({ visual }: { visual: Visual }) {
           {visual.title}
         </div>
       )}
+      {visual.kind === "pixel" && (
+        <div role="img" aria-label={visual.title ?? "Пиксельное представление данных"}
+          className="rounded-xl border border-slate-300 bg-slate-950 p-5 text-sky-200">
+          <pre className="overflow-x-auto font-mono text-sm leading-relaxed whitespace-pre">{visual.ascii ?? visual.bigText ?? "Пиксельные данные"}</pre>
+          <p className="mt-2 text-xs text-slate-300">{visual.bigTextSub ?? "Визуализация дискретных значений."}</p>
+        </div>
+      )}
       {visual.kind === "ascii" && (
         <pre className="overflow-x-auto rounded-xl border border-slate-200 bg-slate-900 px-5 py-4 font-mono text-[13px] leading-relaxed text-sky-300 shadow-inner">
           {visual.ascii}

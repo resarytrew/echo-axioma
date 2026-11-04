@@ -34,7 +34,7 @@ export function PhaseSee({ spec, onDone }: { spec: SeeSpec; onDone: () => void }
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10">
       <div className="panel-glass rounded-2xl px-6 py-8 sm:px-10">
-        <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.3em] text-sky-600">Увидеть</div>
+        <div className="mb-2 font-mono text-xs uppercase tracking-[0.3em] text-sky-600">Увидеть</div>
         <h3 className="mb-1 font-head text-xl font-semibold text-slate-800 sm:text-2xl">{spec.title}</h3>
         <p className="mb-4 text-sm text-slate-500">{spec.description}</p>
 
@@ -103,7 +103,7 @@ export function PhaseSee({ spec, onDone }: { spec: SeeSpec; onDone: () => void }
                 : "border-amber-200 bg-amber-50 text-amber-800"
             }`}
           >
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-70">
+            <div className="font-mono text-xs uppercase tracking-widest opacity-70">
               {goalMet ? "Исследование выполнено" : "Задание исследования"}
             </div>
             <div className="mt-1 font-head text-sm">{goalMet ? spec.goal.done : spec.goal.task}</div>

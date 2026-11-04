@@ -37,7 +37,7 @@ export interface AnimationLesson {
   durationSeconds?: number;
   sourceFile?: string;
   /** Текстовая альтернатива: доступность и работа без видео */
-  transcript?: string[];
+  transcript: [string, ...string[]];
 }
 
 export interface SeeReflection {
